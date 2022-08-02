@@ -51,3 +51,4 @@ atlassian-ide-plugin.xml
 
 # VS Code
 .vscode/
+/my-spring-source-test/build/tmp/compileJava/previous-compilation-data.bin
