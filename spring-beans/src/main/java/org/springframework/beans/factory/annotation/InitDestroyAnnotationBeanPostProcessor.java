@@ -185,10 +185,12 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 		return mergedNames.distinct().toArray(String[]::new);
 	}
 
+	// 对JSR250注解的支持
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
+			// 调用标注@PostConstruct注解的方法
 			metadata.invokeInitMethods(bean, beanName);
 		}
 		catch (InvocationTargetException ex) {
@@ -205,10 +207,12 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 		return bean;
 	}
 
+	// 对JSR250注解的支持
 	@Override
 	public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
+			// 调用标注@PreDestroy注解的方法
 			metadata.invokeDestroyMethods(bean, beanName);
 		}
 		catch (InvocationTargetException ex) {
@@ -242,6 +246,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 			synchronized (this.lifecycleMetadataCache) {
 				metadata = this.lifecycleMetadataCache.get(clazz);
 				if (metadata == null) {
+					// 获取bean生命周期元数据
 					metadata = buildLifecycleMetadata(clazz);
 					this.lifecycleMetadataCache.put(clazz, metadata);
 				}
@@ -251,7 +256,10 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 		return metadata;
 	}
 
+	// 获取bean生命周期元数据，也就是获取被@PostConstruct和@PreDestroy注解标注的方法
 	private LifecycleMetadata buildLifecycleMetadata(final Class<?> clazz) {
+		// initAnnotationType表示@PostConstruct
+		// destroyAnnotationType表示@PreDestroy
 		if (!AnnotationUtils.isCandidateClass(clazz, Arrays.asList(this.initAnnotationType, this.destroyAnnotationType))) {
 			return this.emptyLifecycleMetadata;
 		}

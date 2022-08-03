@@ -1013,6 +1013,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					removeAlias(beanName);
 				}
 			}
+			// 是否开始创建bean
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
@@ -1025,9 +1026,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
+				// 还在注册阶段
 				// Still in startup registration phase
+				// 将beanDefinition放入beanDefinitionMap中
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);
+				// this.manualSingletonNames如果有相同的beanName就删除
 				removeManualSingletonName(beanName);
 			}
 			this.frozenBeanDefinitionNames = null;

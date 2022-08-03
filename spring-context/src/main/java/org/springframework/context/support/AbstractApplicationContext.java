@@ -562,43 +562,55 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			// 返回子类的bean工厂
+			// 主要创建BeanFactory对象和解析xml
+			// 如果是使用xml配置的话会将xml里面的配置解析成BeanDefinition注册到容器中
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
+			// 为beanFactory设置属性，例如ClassLoader、ApplicationListener等。
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				// Spring提供的空方法，让开发者能够在BeanFactory准备工作完成后做一些定制化的处理，一般结合BeanPostProcessor接口的实现类一起使用
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
+				// 调用实现了BeanDefinitionRegistryPostProcessor和BeanFactoryPostProcessor接口的类
+				// 这里将会调用到AnnotationConfigApplicationContext构造方法中注册的AnnotationConfigApplicationContext类实现类的扫描
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
+				// 将实现了BeanPostProcessor接口的类实例化提交到BeanFactory类中的beanPostProcessors列表中。
 				registerBeanPostProcessors(beanFactory);
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
+				// 初始化消息资源，用于设置国际化
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
+				// 初始化事件管理
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
+				// Spring提供的空方法，让开发者能够对一些特殊的Bean进行初始化
+				// 在SpringBoot中使用此方法做内嵌Tomcat功能
 				onRefresh();
 
 				// Check for listener beans and register them.
+				// 注册监听类
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				// 完成Bean的实例化和AOP的入口处理
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
+				// 完成刷新处理，清理缓存、发布刷新完成事件消息等
 				finishRefresh();
 			}
-
 			catch (BeansException ex) {
 				if (logger.isWarnEnabled()) {
 					logger.warn("Exception encountered during context initialization - " +

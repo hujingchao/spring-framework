@@ -65,9 +65,12 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		// ApplicationStartup接口，仅仅是作为启动步骤的标记
 		StartupStep createAnnotatedBeanDefReader = this.getApplicationStartup().start("spring.context.annotated-bean-reader.create");
+		// 在DefaultListableBeanFactory的beanDefinitionMap中加入一系列注解处理器
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		createAnnotatedBeanDefReader.end();
+		// 注册默认的注解过滤器
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -163,8 +166,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	@Override
 	public void register(Class<?>... componentClasses) {
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
+		// ApplicationStartup接口，仅仅是作为启动步骤的标记
 		StartupStep registerComponentClass = this.getApplicationStartup().start("spring.context.component-classes.register")
 				.tag("classes", () -> Arrays.toString(componentClasses));
+		// 将componentClasses类添加到DefaultListableBeanFactory的beanDefinitionMap中
 		this.reader.register(componentClasses);
 		registerComponentClass.end();
 	}

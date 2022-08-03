@@ -202,6 +202,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * JSR-330's {@link jakarta.inject.Named} annotations, if available.
 	 *
 	 */
+	// 添加默认的注解过滤器，主要是针对@Component注解，已经包含了@Component注解的@Repository、@Service、@Controller
 	@SuppressWarnings("unchecked")
 	protected void registerDefaultFilters() {
 		this.includeFilters.add(new AnnotationTypeFilter(Component.class));
