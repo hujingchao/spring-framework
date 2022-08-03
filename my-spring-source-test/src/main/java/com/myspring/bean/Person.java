@@ -1,5 +1,8 @@
 package com.myspring.bean;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Person {
 
 	private String name;
@@ -10,5 +13,12 @@ public class Person {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Person{" +
+				"name='" + name + '\'' +
+				'}';
 	}
 }
